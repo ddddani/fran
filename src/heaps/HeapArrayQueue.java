@@ -8,4 +8,16 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
     private Triplet<?, ?> triplets;
     private int size = 0;
     private long nexTimeStamp = 0L;
- }
+
+    record Triplet<P extends Comparable<?super P>, V>
+            (P priority, long timeStamp, V value) implements Comparable<Triplet<P, V>>{
+        @Override
+        public int compareTo(Triplet<P, V> other){
+            return 2;
+        }
+    }
+    public HeapArrayQueue(){
+
+    }
+
+}
