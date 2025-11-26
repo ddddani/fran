@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 public class HeapArrayQueue<P extends Comparable<? super P>, V> implements PriorityQueue<P, V> {
     private static final int INITIAL_QUEUE_CAPACITY = 1;
 
-    private Triplet<?, ?>[] triplets;
+    private Triplet<P, V>[] triplets;
     private int size = 0;
     private long nextTimeStamp = 0L;
 
@@ -49,8 +49,8 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
             ensureCapacity();
         } size++; triplets[size] = trip; int current = size;
         while (current > 1) { int parent = parentIndex(current);
-            Triplet<P, V> currentTrip = (Triplet<P, V>) triplets[current];
-            Triplet<P, V> parentTrip = (Triplet<P, V>) triplets[parent];
+            Triplet<P, V> currentTrip = triplets[current];
+            Triplet<P, V> parentTrip = triplets[parent];
             if (currentTrip.compareTo(parentTrip) <= 0) {
                 break;
             } swap(current, parent);
@@ -63,9 +63,37 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
         var E = element();
         swap(1, size());
         triplets[size] = null;
-        while(true){
-            if(){} //HAZ EL PUTISIMO METODO DE LOS PADRES
+        size--;
+        int pos = 1;
+        while(exists(leftIndex(pos)) || exists(rightIndex(pos))){
+            if(!exists(rightIndex(pos))){
+                Triplet<P,V> actual = triplets[pos];
+                Triplet<P, V> lefSon = triplets[leftIndex(pos)];
+                if(actual.compareTo(lefSon) > 0) break;
+                swap(pos, leftIndex(pos));
+                pos = 2 * pos;
+            } else if (!exists(leftIndex(pos))) {
+                Triplet<P,V> actual = triplets[pos];
+                Triplet<P,V> rightSon = triplets[rightIndex(pos)];
+                if (actual.compareTo(rightSon) > 0) break;
+                swap(pos, rightIndex(pos));
+                pos = 2 * pos + 1;
+            }else {
+                Triplet<P, V> lefSon = triplets[leftIndex(pos)];
+                Triplet<P, V> rightSon = triplets[rightIndex(pos)];
+                Triplet<P, V> actual = triplets[pos];
+                if (lefSon.compareTo(rightSon) > 0) {
+                    if (actual.compareTo(lefSon) > 0) break;
+                    swap(pos, leftIndex(pos));
+                    pos = 2 * pos;
+                } else {
+                    if (actual.compareTo(rightSon) > 0) break;
+                    swap(pos, rightIndex(pos));
+                    pos = 2 * pos + 1;
+                }
+            }
         }
+        return E;
     }
 
     @Override
@@ -78,12 +106,14 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
     public int size(){
         return size;
     }
+
     @SuppressWarnings("unchecked")
     private void swap(int i, int j) {
-        Triplet<P,V> temporal = (Triplet<P, V>) triplets[i];
+        Triplet<P,V> temporal = triplets[i];
         triplets[i] = triplets[j];
         triplets[j] = temporal;
     }
+
     private void ensureCapacity(){
         Triplet<P, V>[] newArray = new Triplet[triplets.length * 2];
         System.arraycopy(triplets, 0, newArray, 0, triplets.length);
