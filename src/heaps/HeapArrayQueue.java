@@ -99,17 +99,15 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public V element(){
         if(size() == 0) throw new NoSuchElementException();
-        return (V) triplets[1].value;
+        return triplets[1].value;
     }
 
     public int size(){
         return size;
     }
 
-    @SuppressWarnings("unchecked")
     private void swap(int i, int j) {
         Triplet<P,V> temporal = triplets[i];
         triplets[i] = triplets[j];
