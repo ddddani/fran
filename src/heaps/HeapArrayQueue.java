@@ -69,36 +69,29 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
 
     @Override
     public V remove(){
+        if(element() == null) throw new NoSuchElementException();
         var E = element();
         swap(1, size());
         triplets[size] = null;
-        size--;
-        int pos = 1;
-        while(exists(leftIndex(pos)) || exists(rightIndex(pos))){
-            if(!exists(rightIndex(pos))){
-                Triplet<P,V> actual = triplets[pos];
-                Triplet<P, V> lefSon = triplets[leftIndex(pos)];
-                if(actual.compareTo(lefSon) > 0) break;
-                swap(pos, leftIndex(pos));
-                pos = 2 * pos;
-            } else if (!exists(leftIndex(pos))) {
-                Triplet<P,V> actual = triplets[pos];
-                Triplet<P,V> rightSon = triplets[rightIndex(pos)];
-                if (actual.compareTo(rightSon) > 0) break;
-                swap(pos, rightIndex(pos));
-                pos = 2 * pos + 1;
-            }else {
-                Triplet<P, V> lefSon = triplets[leftIndex(pos)];
-                Triplet<P, V> rightSon = triplets[rightIndex(pos)];
-                Triplet<P, V> actual = triplets[pos];
-                if (lefSon.compareTo(rightSon) > 0) {
-                    if (actual.compareTo(lefSon) > 0) break;
-                    swap(pos, leftIndex(pos));
-                    pos = 2 * pos;
+        size --;
+        int current = 1;
+        while(exists(leftIndex(current))) {
+            Triplet<P, V> actual = triplets[current];
+            Triplet<P, V> leftSon = triplets[leftIndex(current)];
+
+            if (!exists(rightIndex(current))) {
+                if (actual.compareTo(leftSon) > 0) break;
+                swap(current, leftIndex(current));
+                current = leftIndex(current);
+            } else {
+                Triplet<P, V> rightSon = triplets[rightIndex(current)];
+                if (actual.compareTo(leftSon) > 0 && actual.compareTo(rightSon) > 0) break;
+                if (leftSon.compareTo(rightSon) > 0) {
+                    swap(current, leftIndex(current));
+                    current = leftIndex(current);
                 } else {
-                    if (actual.compareTo(rightSon) > 0) break;
-                    swap(pos, rightIndex(pos));
-                    pos = 2 * pos + 1;
+                    swap(current, rightIndex(current));
+                    current = rightIndex(current);
                 }
             }
         }
