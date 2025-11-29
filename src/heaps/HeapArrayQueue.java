@@ -18,9 +18,15 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
             if (cmp != 0){
                 return cmp;
             }
-            int timeCmp = Long.compare(this.timeStamp, other.timeStamp);
+            int timeCmp = Long.compare(other.timeStamp, this.timeStamp);
             return timeCmp;
         }
+    }
+
+    public HeapArrayQueue(){
+        this.triplets = new Triplet[INITIAL_QUEUE_CAPACITY];
+        this.size = 0;
+        this.nextTimeStamp = 0L;
     }
 
     private static int parentIndex(int i) {
@@ -35,25 +41,28 @@ public class HeapArrayQueue<P extends Comparable<? super P>, V> implements Prior
     private boolean exists(int index) {
         return 1 <= index && index <= size();
     }
-    public HeapArrayQueue(){
-        this.triplets = new Triplet[INITIAL_QUEUE_CAPACITY];
-        this.size = 0;
-        this.nextTimeStamp = 0L;
-    }
 
     @Override
     public void add(P priority, V value){
         Triplet<P, V> trip = new Triplet<>(priority, nextTimeStamp, value);
         nextTimeStamp++;
+
         if (size + 1 == triplets.length) {
             ensureCapacity();
-        } size++; triplets[size] = trip; int current = size;
+        }
+
+        size++;
+        triplets[size] = trip; int current = size;
+
         while (current > 1) { int parent = parentIndex(current);
             Triplet<P, V> currentTrip = triplets[current];
             Triplet<P, V> parentTrip = triplets[parent];
+
             if (currentTrip.compareTo(parentTrip) <= 0) {
                 break;
-            } swap(current, parent);
+            }
+
+            swap(current, parent);
             current = parent;
         }
     }

@@ -25,6 +25,6 @@ public class TripletsTest {
     @Test void testEqualPriorityUsesTimestamp() {
         var t1 = new HeapArrayQueue.Triplet<>(5, 1L, "A");
         var t2 = new HeapArrayQueue.Triplet<>(5, 2L, "B");
-        assertTrue(t2.compareTo(t1) > 0);
+        assertTrue(t1.compareTo(t2) > 0);
     }
 }

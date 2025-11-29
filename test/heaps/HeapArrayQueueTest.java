@@ -38,9 +38,12 @@ public class HeapArrayQueueTest {
         assertEquals(0, q.size());
     }
 
-    @Test void testStableOrderWithSamePriority() {
+    @Test
+    void testStableOrderWithSamePriority() {
         HeapArrayQueue<Integer, String> q = new HeapArrayQueue<>();
         q.add(5, "A");
+        q.add(5, "B");
+        q.add(5, "C");
         assertEquals("A", q.remove());
         assertEquals("B", q.remove());
         assertEquals("C", q.remove());
